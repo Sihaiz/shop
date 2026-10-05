@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product — FINDLY</title>
+<meta name="description" content="Everyday finds under $20.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main class="wrap" id="pdpRoot">
+  <div class="pdp" id="pdp"></div>
+</main>
+
+<div class="wrap" id="relatedWrap" hidden>
+  <section class="section-head">
+    <div>
+      <h2>Also on the shelf</h2>
+      <p>Pairs well with what you just looked at.</p>
+    </div>
+  </section>
+  <div class="grid" id="related" style="padding-bottom:70px"></div>
+</div>
+
+<div id="site-footer"></div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/products.js"></script>
+<script src="assets/js/shipping.js"></script>
+<script src="assets/js/store.js"></script>
+<script>
+(function () {
+  mountChrome();
+
+  var id = new URLSearchParams(location.search).get('id');
+  var p = id ? window.findProduct(id) : null;
+  var root = document.getElementById('pdp');
+
+  if (!p) {
+    document.title = 'Not found — ' + window.CONFIG.brand;
+    root.innerHTML =
+      '<div class="empty" style="margin:60px 0">' +
+        '<h2>That item left the shelf</h2>' +
+        '<p>The shelf changes every week, so some things do not come back. Have a look at what is live right now.</p>' +
+        '<a class="btn btn-primary" href="index.html">Back to the shelf</a>' +
+      '</div>';
+    return;
+  }
+
+  document.title = p.title + ' — ' + window.CONFIG.brand;
+
+  var sel = window.defaultSelection(p);
+  var catLabel = (window.CATEGORIES.find(function (c) { return c.id === p.category; }) || {}).label || 'Shop';
+
+  /* ---------- 选项组 HTML ---------- */
+  function optionsHTML() {
+    if (!p.options || !p.options.length) return '';
+    return p.options.map(function (g) {
+      var vals = g.values.map(function (v) {
+        var swatch = v.hex ? '<span class="opt-hex" style="background:' + v.hex + '"></span>' : '';
+        var delta = v.price ? ' <em>+' + money(v.price) + '</em>' : '';
+        return '<button type="button" class="opt-val' + (sel[g.name] === v.label ? ' is-on' : '') +
+          '" data-group="' + escapeHTML(g.name) + '" data-value="' + escapeHTML(v.label) + '">' +
+          swatch + escapeHTML(v.label) + delta + '</button>';
+      }).join('');
+      return '<div class="opt-group">' +
+        '<div class="opt-head">' +
+          '<span class="opt-name">' + escapeHTML(g.name) + '</span>' +
+          '<span class="opt-picked" id="picked_' + escapeHTML(g.name) + '">' + escapeHTML(sel[g.name]) + '</span>' +
+        '</div>' +
+        '<div class="opt-values">' + vals + '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  root.innerHTML =
+    '<p class="crumbs"><a href="index.html">Shop all</a> &nbsp;/&nbsp; ' +
+      '<a href="index.html?cat=' + p.category + '">' + escapeHTML(catLabel) + '</a>' +
+      ' &nbsp;/&nbsp; ' + escapeHTML(p.title) + '</p>' +
+
+    '<div class="pdp-grid">' +
+
+      '<div>' +
+        '<div class="pdp-stage" style="' + thumbStyle(p) + '">' + thumbSVG(p) + '</div>' +
+        '<div class="swatches">' +
+          '<div class="swatch is-on" style="' + thumbStyle(p) + '">' + thumbSVG(p) + '</div>' +
+          '<div class="swatch" style="background:' + window.CATEGORY_STYLE[p.category].c2 + '">' + thumbSVG(p) + '</div>' +
+          '<div class="swatch" style="background:#F2F0EA">' + thumbSVG(p) + '</div>' +
+          '<div class="swatch" style="background:' + window.CATEGORY_STYLE[p.category].c1 + '">' + thumbSVG(p) + '</div>' +
+        '</div>' +
+      '</div>' +
+
+      '<div>' +
+        '<h1>' + escapeHTML(p.title) + '</h1>' +
+        '<p class="pdp-cn">' + escapeHTML(p.cn) + ' &nbsp;&middot;&nbsp; 内部备注，上线前删除</p>' +
+        '<div class="pdp-rating"><span class="p-rating">&#9733; ' + p.rating.toFixed(1) + '</span>' +
+          '<span>(' + p.reviews + ' reviews)</span><span>&middot;</span><span id="stockLine">' + p.stock + ' in stock</span></div>' +
+
+        optionsHTML() +
+
+        '<div class="pdp-price">' +
+          '<span class="pdp-now" id="vPrice">' + money(p.price) + '</span>' +
+          (p.compareAt ? '<span class="pdp-was">' + money(p.compareAt) + '</span>' : '') +
+        '</div>' +
+        '<span class="pdp-save" id="vSave"></span>' +
+
+        '<p class="pdp-blurb">' + escapeHTML(p.blurb) + '</p>' +
+
+        '<div class="pdp-buy">' +
+          '<div class="qty">' +
+            '<button type="button" id="qMinus" aria-label="Decrease">&#8722;</button>' +
+            '<input id="qty" type="number" value="1" min="1" max="20" aria-label="Quantity">' +
+            '<button type="button" id="qPlus" aria-label="Increase">+</button>' +
+          '</div>' +
+          '<button class="btn btn-primary" id="addBtn">Add to cart</button>' +
+        '</div>' +
+
+        '<div class="pdp-note"><span>&#9432;</span>' +
+          '<span id="shipHint"></span></div>' +
+
+        '<ul class="pdp-features">' +
+          p.features.map(function (f) { return '<li>' + escapeHTML(f) + '</li>'; }).join('') +
+        '</ul>' +
+
+        '<div class="spec-row"><span>SKU</span><b id="vSku">—</b></div>' +
+        '<div class="spec-row"><span>Item weight</span><b id="vWeight">—</b></div>' +
+        '<div class="spec-row"><span>Packed size</span><b id="vDims">—</b></div>' +
+        '<div class="spec-row"><span>Billable weight (this item, on its own)</span><b id="vBillable">—</b></div>' +
+        '<div class="spec-row"><span>Freight ratio (shipped alone)</span><b id="vRatio">—</b></div>' +
+        '<div class="spec-row"><span>Density</span><b id="vDensity">—</b></div>' +
+        '<div class="spec-row"><span>Ships from</span><b>Local warehouse</b></div>' +
+        '<div class="spec-row"><span>Returns</span><b>30 days, no questions</b></div>' +
+      '</div>' +
+
+    '</div>';
+
+  /* ---------- 款式切换后刷新展示 ---------- */
+  function refresh() {
+    var v = window.resolveVariant(p, sel);
+    var save = p.compareAt ? Math.round((1 - v.price / p.compareAt) * 100) : 0;
+
+    document.getElementById('vPrice').textContent = money(v.price);
+    var saveEl = document.getElementById('vSave');
+    saveEl.textContent = save > 0 ? 'Save ' + save + '%' : '';
+    saveEl.style.display = save > 0 ? '' : 'none';
+
+    document.getElementById('vSku').textContent = v.sku;
+    document.getElementById('vWeight').textContent = window.fmtG(v.weight);
+    document.getElementById('vDims').textContent = v.dims.l + ' × ' + v.dims.w + ' × ' + v.dims.h + ' cm';
+    document.getElementById('vSku').textContent = v.sku;
+
+    /* 单独寄这一件的计费重与运费 */
+    var q = window.quoteSingle(p, v);
+    document.getElementById('vBillable').textContent =
+      window.fmtG(q.billableWeightG) + (q.volumetricDominates ? ' — by volume' : ' — by weight');
+    document.getElementById('shipHint').textContent =
+      'On its own this ships at ' + window.fmtG(q.billableWeightG) + ' billable weight — ' +
+      money(q.baseRate) + ' to ' + q.zone.label + '. Free once your cart passes ' +
+      money(window.CONFIG.shipping.freeThreshold) + '.';
+
+    /* 选品信号：运费占售价比 + 密度 */
+    var ratio = v.price > 0 ? q.baseRate / v.price : 0;
+    var ratioEl = document.getElementById('vRatio');
+    ratioEl.textContent = Math.round(ratio * 100) + '% of item price';
+    ratioEl.className = ratio < 0.25 ? 'ok' : (ratio < 0.40 ? 'warn' : 'bad');
+
+    var density = v.volumeCm3 > 0 ? Math.round(v.weight / v.volumeCm3 * 1000) : 0;
+    var densEl = document.getElementById('vDensity');
+    densEl.textContent = density + ' g/L' + (density < 150 ? ' — bulky, expensive to ship' : '');
+    densEl.className = density >= 250 ? 'ok' : (density >= 150 ? 'warn' : 'bad');
+
+    var btn = document.getElementById('addBtn');
+    btn.textContent = 'Add to cart · ' + money(v.price);
+
+    /* 同步选项高亮 */
+    $$('.opt-val').forEach(function (b) {
+      var on = sel[b.getAttribute('data-group')] === b.getAttribute('data-value');
+      b.classList.toggle('is-on', on);
+    });
+    Object.keys(sel).forEach(function (k) {
+      var el = document.getElementById('picked_' + k);
+      if (el) el.textContent = sel[k];
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('.opt-val');
+    if (!b) return;
+    sel[b.getAttribute('data-group')] = b.getAttribute('data-value');
+    refresh();
+  });
+
+  /* ---------- 数量与加购 ---------- */
+  var qtyEl = document.getElementById('qty');
+  function clampQty() {
+    var v = Math.max(1, Math.min(20, parseInt(qtyEl.value, 10) || 1));
+    qtyEl.value = v;
+    return v;
+  }
+  document.getElementById('qMinus').onclick = function () { qtyEl.value = clampQty() - 1; clampQty(); };
+  document.getElementById('qPlus').onclick = function () { qtyEl.value = clampQty() + 1; clampQty(); };
+  qtyEl.onchange = clampQty;
+
+  document.getElementById('addBtn').onclick = function () {
+    var n = clampQty();
+    var v = window.cart.add(p.id, sel, n);
+    toast('Added ' + n + ' × ' + (v.shortLabel || p.title) + ' to cart');
+  };
+
+  refresh();
+
+  /* ---------- 相关推荐 ---------- */
+  var rel = window.PRODUCTS.filter(function (x) {
+    return x.id !== p.id && x.category === p.category;
+  }).concat(window.PRODUCTS.filter(function (x) {
+    return x.id !== p.id && x.category !== p.category && x.tag === 'Bestseller';
+  })).slice(0, 4);
+
+  if (rel.length) {
+    document.getElementById('relatedWrap').hidden = false;
+    document.getElementById('related').innerHTML = rel.map(productCardHTML).join('');
+  }
+})();
+</script>
+</body>
+</html>

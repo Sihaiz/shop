@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — FINDLY</title>
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main class="wrap">
+  <div class="page-head">
+    <h1>Checkout</h1>
+    <p id="coSub">Secure checkout &middot; Card details never touch this site</p>
+  </div>
+
+  <div class="co-grid" id="coGrid" hidden>
+
+    <form id="coForm" novalidate>
+
+      <div class="panel" id="payStatusPanel" hidden>
+        <h2 id="payStatusTitle">Payment not connected yet</h2>
+        <p class="hint" id="payStatusBody" style="margin-bottom:0"></p>
+      </div>
+
+      <div class="panel">
+        <h2>Contact</h2>
+        <p class="hint">Order confirmation goes here.</p>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Shipping address</h2>
+        <p class="hint">Shipping is calculated from your address and the packed size of what is in the cart.</p>
+        <div class="field-row">
+          <div class="field">
+            <label for="firstName">First name</label>
+            <input id="firstName" name="firstName" autocomplete="given-name" required>
+          </div>
+          <div class="field">
+            <label for="lastName">Last name</label>
+            <input id="lastName" name="lastName" autocomplete="family-name" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="address1">Address</label>
+          <input id="address1" name="address1" autocomplete="address-line1" required>
+        </div>
+        <div class="field">
+          <label for="address2">Apartment, suite, etc. <span style="font-weight:400;color:var(--ink3)">(optional)</span></label>
+          <input id="address2" name="address2" autocomplete="address-line2">
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="country">Country</label>
+            <select id="country" name="country">
+              <option value="US" selected>United States</option>
+              <option value="CA">Canada</option>
+              <option value="GB">United Kingdom</option>
+              <option value="AU">Australia</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="state" id="stateLabel">State</label>
+            <input id="state" name="state" autocomplete="address-level1" placeholder="e.g. CA" required>
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="city">City</label>
+            <input id="city" name="city" autocomplete="address-level2" required>
+          </div>
+          <div class="field">
+            <label for="zip">ZIP / postcode</label>
+            <input id="zip" name="zip" autocomplete="postal-code" required>
+          </div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label for="phone">Phone <span style="font-weight:400;color:var(--ink3)">(for delivery only, optional)</span></label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel">
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Payment</h2>
+        <p class="hint">Choose how you want to pay.</p>
+
+        <label class="pay-option is-on" id="optCard">
+          <input type="radio" name="payMethod" value="card" checked>
+          <span><b>Credit / debit card</b><span>Visa, Mastercard, Amex, Apple&nbsp;Pay, Google&nbsp;Pay</span></span>
+        </label>
+
+        <label class="pay-option" id="optWallet">
+          <input type="radio" name="payMethod" value="wallet">
+          <span><b>PayPal</b><span>Pay with your PayPal balance or linked account</span></span>
+        </label>
+
+        <p class="ship-note" id="payNote">You will be redirected to our payment provider to finish securely. Card data is never stored on this site.</p>
+      </div>
+
+      <button class="btn btn-primary btn-block" id="placeBtn" type="submit" style="padding:17px">Place order</button>
+      <p class="ship-note" style="text-align:center">By placing an order you agree to our terms and 30-day return policy.</p>
+    </form>
+
+    <aside class="summary">
+      <h2>Your order</h2>
+      <div id="coItems" style="margin-bottom:14px"></div>
+
+      <div class="kv"><span>Subtotal</span><b id="coSub2">$0.00</b></div>
+      <div class="kv"><span>Shipping</span><b id="coShip">$0.00</b></div>
+      <div class="kv total"><span>Total</span><b id="coTotal">$0.00</b></div>
+
+      <div class="free-ship" id="coFreeShip"></div>
+
+      <button class="ship-toggle" id="coShipToggle" type="button">
+        <span>How shipping was calculated</span><span id="coShipArrow">+</span>
+      </button>
+      <div class="ship-detail" id="coShipDetail" hidden></div>
+
+      <a href="cart.html" class="link-remove" style="display:inline-block;margin-top:12px">Edit cart</a>
+    </aside>
+
+  </div>
+
+  <div id="coEmpty" hidden></div>
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/products.js"></script>
+<script src="assets/js/shipping.js"></script>
+<script src="assets/js/store.js"></script>
+<script>
+(function () {
+  mountChrome();
+
+  var rows = window.cart.detailed();
+  var empty = document.getElementById('coEmpty');
+  var grid = document.getElementById('coGrid');
+
+  if (!rows.length) {
+    empty.hidden = false;
+    grid.hidden = true;
+    document.getElementById('coSub').textContent = 'Nothing to check out yet.';
+    empty.innerHTML =
+      '<div class="empty" style="margin:20px 0 60px">' +
+        '<h2>Your cart is empty</h2>' +
+        '<p>Add something to the cart first, then come back.</p>' +
+        '<a class="btn btn-primary" href="index.html">Back to the shelf</a>' +
+      '</div>';
+    return;
+  }
+
+  grid.hidden = false;
+
+  var form = document.getElementById('coForm');
+  var country = document.getElementById('country');
+  var state = document.getElementById('state');
+  var stateLabel = document.getElementById('stateLabel');
+  var quote = null;
+
+  /* 购物车行（含款式） */
+  document.getElementById('coItems').innerHTML = rows.map(function (r) {
+    return '<div class="kv" style="border-bottom:1px dashed var(--line);padding:9px 0;align-items:flex-start">' +
+      '<span style="color:var(--ink);font-size:13.5px;line-height:1.45">' + escapeHTML(r.product.title) +
+      (r.variant.shortLabel ? '<br><span style="color:var(--ink3);font-size:12px">' +
+        escapeHTML(r.variant.shortLabel) + '</span>' : '') +
+      ' <span style="color:var(--ink3)">&times;' + r.qty + '</span></span>' +
+      '<b>' + money(r.line) + '</b></div>';
+  }).join('');
+
+  function currentZone() {
+    return window.zoneForAddress(country.value, state.value);
+  }
+
+  function recalc() {
+    quote = window.computeQuote(rows, currentZone(), window.cart.subtotal());
+    var subtotal = window.cart.subtotal();
+
+    document.getElementById('coSub2').textContent = money(subtotal);
+    document.getElementById('coShip').textContent = quote.shipping === 0 ? 'Free' : money(quote.shipping);
+    document.getElementById('coTotal').textContent = money(subtotal + quote.shipping);
+
+    var box = document.getElementById('coFreeShip');
+    if (quote.freeApplied) {
+      box.innerHTML = '<p><b>Free shipping unlocked.</b></p>' +
+        '<div class="track"><i class="done" style="width:100%"></i></div>';
+    } else if (quote.overFreeCap) {
+      box.innerHTML = '<p>Free shipping applies up to ' + window.fmtG(quote.freeMaxBillableG) +
+        '. This order is <b>' + window.fmtG(quote.billableWeightG) + '</b> billable.</p>' +
+        '<div class="track"><i class="over" style="width:100%"></i></div>';
+    } else {
+      box.innerHTML = '<p>Add <b>' + money(quote.remainingForFree) + '</b> more for free shipping.</p>' +
+        '<div class="track"><i style="width:' +
+        Math.min(100, Math.round(subtotal / quote.freeThreshold * 100)) + '%"></i></div>';
+    }
+
+    document.getElementById('coShipDetail').innerHTML =
+      '<div class="kv"><span>Destination</span><b>' + escapeHTML(quote.zone.label) + '</b></div>' +
+      '<div class="kv"><span>Actual weight</span><b>' + window.fmtG(quote.packedWeightG) + '</b></div>' +
+      '<div class="kv"><span>Volume weight</span><b>' + window.fmtG(quote.volumetricWeightG) + '</b></div>' +
+      '<div class="kv"><span>Billable weight</span><b>' + window.fmtG(quote.billableWeightG) + '</b></div>' +
+      '<div class="kv"><span>Base rate</span><b>' + money(quote.baseRate) + '</b></div>' +
+      (quote.oversize ? '<div class="kv"><span>Oversize surcharge</span><b>' + money(quote.oversizeSurcharge) + '</b></div>' : '') +
+      '<p class="ship-note" style="margin-top:8px">' +
+        (quote.volumetricDominates
+          ? 'Billed on volume — ' + quote.volumetricShare + '% of billable weight comes from size, not mass.'
+          : 'Billed on actual weight — this order is dense enough that size does not matter.') +
+      '</p>';
+  }
+
+  country.onchange = function () {
+    stateLabel.textContent = country.value === 'US' ? 'State' : 'Province / region';
+    state.placeholder = country.value === 'US' ? 'e.g. CA' : '';
+    recalc();
+  };
+  state.oninput = recalc;
+  recalc();
+
+  document.getElementById('coShipToggle').onclick = function () {
+    var d = document.getElementById('coShipDetail');
+    d.hidden = !d.hidden;
+    document.getElementById('coShipArrow').textContent = d.hidden ? '+' : '−';
+  };
+
+  /* 支付状态提示 */
+  var mode = window.CONFIG.payment.mode;
+  if (mode === 'demo') {
+    document.getElementById('payStatusPanel').hidden = false;
+    document.getElementById('payStatusBody').innerHTML =
+      'This is a working demo. Cart, weights, shipping calculation and the order form are all real, ' +
+      'but no payment gateway is wired up, so nothing will be charged. ' +
+      'Set <code>CONFIG.payment.mode</code> in <code>assets/js/config.js</code> once an account is approved.';
+  }
+
+  /* 支付方式样式 */
+  var opts = $$('.pay-option');
+  opts.forEach(function (o) {
+    o.addEventListener('click', function () {
+      opts.forEach(function (x) { x.classList.remove('is-on'); });
+      o.classList.add('is-on');
+      o.querySelector('input').checked = true;
+      document.getElementById('payNote').textContent = o.querySelector('input').value === 'wallet'
+        ? 'You will be redirected to PayPal to approve the payment.'
+        : 'You will be redirected to our payment provider to finish securely. Card data is never stored on this site.';
+    });
+  });
+
+  /* 提交 */
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    var required = ['email', 'firstName', 'lastName', 'address1', 'state', 'city', 'zip'];
+    for (var i = 0; i < required.length; i++) {
+      var el = form.elements[required[i]];
+      if (!el.value.trim()) {
+        el.focus();
+        el.style.borderColor = 'var(--deal)';
+        toast('Please fill in every required field');
+        return;
+      }
+      el.style.borderColor = '';
+    }
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.elements.email.value)) {
+      form.elements.email.focus();
+      form.elements.email.style.borderColor = 'var(--deal)';
+      toast('That email address looks off');
+      return;
+    }
+
+    recalc();
+
+    var order = {
+      zone: quote.zoneId,
+      items: rows.map(function (r) {
+        return {
+          productId: r.product.id,
+          sku: r.variant.sku,
+          variant: r.variant.selection,
+          unitPrice: r.variant.price,
+          unitWeightG: r.variant.weight,
+          unitDimsCm: r.variant.dims,
+          qty: r.qty,
+          lineTotal: r.line
+        };
+      }),
+      shipping: {
+        actualWeightG: quote.packedWeightG,
+        volumeWeightG: quote.volumetricWeightG,
+        billableWeightG: quote.billableWeightG,
+        baseRate: quote.baseRate,
+        oversizeSurcharge: quote.oversizeSurcharge,
+        freeApplied: quote.freeApplied,
+        charged: quote.shipping
+      },
+      subtotal: window.cart.subtotal(),
+      total: Math.round((window.cart.subtotal() + quote.shipping) * 100) / 100,
+      method: form.elements.payMethod.value,
+      customer: {
+        email: form.elements.email.value.trim(),
+        name: form.elements.firstName.value.trim() + ' ' + form.elements.lastName.value.trim(),
+        phone: form.elements.phone.value.trim(),
+        address1: form.elements.address1.value.trim(),
+        address2: form.elements.address2.value.trim(),
+        city: form.elements.city.value.trim(),
+        state: form.elements.state.value.trim(),
+        zip: form.elements.zip.value.trim(),
+        country: form.elements.country.value
+      }
+    };
+
+    var cfg = window.CONFIG.payment;
+    var btn = document.getElementById('placeBtn');
+    btn.disabled = true;
+    btn.textContent = 'Working…';
+
+    if (cfg.mode === 'endpoint') {
+      fetch(cfg.checkoutEndpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(order)
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) {
+          if (data && data.url) { location.href = data.url; return; }
+          throw new Error('No checkout url returned');
+        })
+        .catch(function (err) {
+          btn.disabled = false;
+          btn.textContent = 'Place order';
+          toast('Could not reach the payment service');
+          console.error(err);
+        });
+      return;
+    }
+
+    if (cfg.mode === 'payment_link' && cfg.stripePaymentLink) {
+      location.href = cfg.stripePaymentLink;
+      return;
+    }
+
+    setTimeout(function () {
+      btn.disabled = false;
+      btn.textContent = 'Place order';
+      toast('Demo only — no payment gateway connected yet');
+      console.log('[demo order]', order);
+    }, 500);
+  });
+})();
+</script>
+</body>
+</html>

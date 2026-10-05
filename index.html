@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FINDLY — Everyday finds under $20</title>
+<meta name="description" content="Small, useful things at prices that do not need justifying. Storage, kitchen, pet and home scent finds, most under $20. New picks every Wednesday.">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<div id="site-header"></div>
+
+<main>
+
+  <section class="hero">
+    <div class="hero-inner">
+      <span class="eyebrow">New finds every Wednesday</span>
+      <h1>Good stuff, <em>under $20</em>.</h1>
+      <p class="hero-sub">The useful little things that make a home work better — storage that actually fits, kitchen tools that last, pet gear that saves your couch. Priced so you do not have to think about it.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#shelf">Shop the shelf</a>
+        <a class="btn btn-ghost" href="product.html?id=bundle-treasure-box">Open a Treasure Box</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><b>$7.99–19.99</b><span>Every single item</span></div>
+        <div class="stat"><b>Free ship $29+</b><span>Ships in 1 business day</span></div>
+        <div class="stat"><b>4.7★ avg</b><span>Across 3,100+ reviews</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="value-strip">
+    <div class="wrap value-inner">
+      <div class="value"><b>One price ladder, no games</b><span>Three tiers. No fake countdowns.</span></div>
+      <div class="value"><b>Packed and shipped in 24h</b><span>Small items, tracked delivery.</span></div>
+      <div class="value"><b>Found, not dropshipped</b><span>We test it before it goes up.</span></div>
+    </div>
+  </section>
+
+  <div class="wrap">
+
+    <section class="section-head" id="shelf">
+      <div>
+        <h2>This week's shelf</h2>
+        <p>Everything below is in stock and ready to ship.</p>
+      </div>
+    </section>
+
+    <div class="filter-bar" id="filterBar"></div>
+    <div class="grid" id="grid"></div>
+
+    <section class="section-head" style="margin-top:56px">
+      <div>
+        <h2>Why the shelf changes</h2>
+        <p>We keep roughly 20 items live at a time. When something is gone, it is gone — and something else takes its place.</p>
+      </div>
+    </section>
+
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));padding-bottom:60px">
+      <div class="panel" style="margin:0">
+        <h2>Small batch on purpose</h2>
+        <p class="hint" style="margin-bottom:0">Deep inventory means boring inventory. We buy shallow so the shelf keeps moving and nothing sits in a warehouse for a year getting dusty.</p>
+      </div>
+      <div class="panel" style="margin:0">
+        <h2>Tested before listing</h2>
+        <p class="hint" style="margin-bottom:0">Every item gets used for a week first. If it annoys us, it does not go up. That is the whole quality process, and it is enough.</p>
+      </div>
+      <div class="panel" style="margin:0">
+        <h2>Under $20, always</h2>
+        <p class="hint" style="margin-bottom:0">Three price tiers: $7.99, $12.99, $19.99. You should never have to check your balance before buying something useful.</p>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<div id="site-footer"></div>
+
+<script src="assets/js/config.js"></script>
+<script src="assets/js/products.js"></script>
+<script src="assets/js/shipping.js"></script>
+<script src="assets/js/store.js"></script>
+<script>
+(function () {
+  mountChrome();
+
+  var params = new URLSearchParams(location.search);
+  var activeCat = params.get('cat') || 'all';
+
+  function renderChips() {
+    var bar = document.getElementById('filterBar');
+    bar.innerHTML = window.CATEGORIES.map(function (c) {
+      return '<a class="chip' + (c.id === activeCat ? ' is-active' : '') +
+        '" href="' + (c.id === 'all' ? 'index.html' : 'index.html?cat=' + c.id) + '">' +
+        escapeHTML(c.label) + '</a>';
+    }).join('');
+  }
+
+  function renderGrid() {
+    var list = window.PRODUCTS.slice();
+    if (activeCat !== 'all') {
+      list = list.filter(function (p) { return p.category === activeCat; });
+    }
+    /* 新品与爆款优先，其余按折扣幅度排 */
+    list.sort(function (a, b) {
+      var rank = function (p) {
+        if (p.tag === 'Bestseller') return 0;
+        if (p.tag === 'New') return 1;
+        if (p.tag === 'Limited') return 2;
+        return 3;
+      };
+      var d = rank(a) - rank(b);
+      if (d !== 0) return d;
+      var sa = a.compareAt ? 1 - a.price / a.compareAt : 0;
+      var sb = b.compareAt ? 1 - b.price / b.compareAt : 0;
+      return sb - sa;
+    });
+    document.getElementById('grid').innerHTML = list.map(productCardHTML).join('');
+  }
+
+  renderChips();
+  renderGrid();
+})();
+</script>
+</body>
+</html>
