@@ -112,7 +112,7 @@ I18N.ready(function () {
         ? '<span class="cart-variant">' + escapeHTML(vlabel) + '</span>'
         : '';
       return '<div class="cart-row">' +
-        '<div class="cart-thumb" style="' + thumbStyle(p) + '">' + thumbSVG(p) + '</div>' +
+        '<div class="cart-thumb" style="' + thumbStyle(p) + '">' + window.pImgHTML(p, 0) + '</div>' +
         '<div class="cart-info">' +
           '<h3>' + escapeHTML(pTitle(p)) + '</h3>' +
           '<p class="cn">' + variantLine +

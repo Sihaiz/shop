@@ -56,6 +56,26 @@ I18N.ready(function () {
   var sel = window.defaultSelection(p);
   var catName = I18N.cat(p.category);
 
+  /* ---------- 图片区（有实拍图用图，否则回退占位） ---------- */
+  var nImg = (p.images && p.images.length) || 0;
+  var stageHTML = nImg
+    ? '<img id="pdpStageImg" class="pdp-img" src="' + p.images[0] + '" alt="' + escapeHTML(pTitle(p)) + '">'
+    : thumbSVG(p);
+  var swatchesHTML;
+  if (nImg) {
+    swatchesHTML = p.images.map(function (src, i) {
+      return '<button type="button" class="swatch swatch-btn' + (i === 0 ? ' is-on' : '') +
+        '" data-idx="' + i + '" aria-label="' + escapeHTML(pTitle(p)) + ' ' + (i + 1) + '">' +
+        '<img src="' + src + '" alt=""></button>';
+    }).join('');
+  } else {
+    swatchesHTML =
+      '<div class="swatch is-on" style="' + thumbStyle(p) + '">' + thumbSVG(p) + '</div>' +
+      '<div class="swatch" style="background:' + window.CATEGORY_STYLE[p.category].c2 + '">' + thumbSVG(p) + '</div>' +
+      '<div class="swatch" style="background:#F2F0EA">' + thumbSVG(p) + '</div>' +
+      '<div class="swatch" style="background:' + window.CATEGORY_STYLE[p.category].c1 + '">' + thumbSVG(p) + '</div>';
+  }
+
   /* ---------- 选项组 HTML ---------- */
   function optionsHTML() {
     if (!p.options || !p.options.length) return '';
@@ -86,13 +106,8 @@ I18N.ready(function () {
     '<div class="pdp-grid">' +
 
       '<div>' +
-        '<div class="pdp-stage" style="' + thumbStyle(p) + '">' + thumbSVG(p) + '</div>' +
-        '<div class="swatches">' +
-          '<div class="swatch is-on" style="' + thumbStyle(p) + '">' + thumbSVG(p) + '</div>' +
-          '<div class="swatch" style="background:' + window.CATEGORY_STYLE[p.category].c2 + '">' + thumbSVG(p) + '</div>' +
-          '<div class="swatch" style="background:#F2F0EA">' + thumbSVG(p) + '</div>' +
-          '<div class="swatch" style="background:' + window.CATEGORY_STYLE[p.category].c1 + '">' + thumbSVG(p) + '</div>' +
-        '</div>' +
+        '<div class="pdp-stage' + (nImg ? ' has-photo' : '') + '" style="' + thumbStyle(p) + '">' + stageHTML + '</div>' +
+        '<div class="swatches">' + swatchesHTML + '</div>' +
       '</div>' +
 
       '<div>' +
@@ -194,6 +209,14 @@ I18N.ready(function () {
   }
 
   document.addEventListener('click', function (e) {
+    var s = e.target.closest('.swatch-btn');
+    if (s) {
+      var idx = parseInt(s.getAttribute('data-idx'), 10) || 0;
+      var stageImg = document.getElementById('pdpStageImg');
+      if (stageImg && window.pImg(p, idx)) stageImg.src = window.pImg(p, idx);
+      $$('.swatch-btn').forEach(function (b) { b.classList.toggle('is-on', b === s); });
+      return;
+    }
     var b = e.target.closest('.opt-val');
     if (!b) return;
     sel[b.getAttribute('data-group')] = b.getAttribute('data-value');

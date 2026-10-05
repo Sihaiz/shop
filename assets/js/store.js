@@ -68,6 +68,21 @@
   window.pFeatures = function (p) { return window.I18N.product(p, 'features'); };
   window.catLabel = function (id) { return window.I18N.cat(id); };
 
+  /* 商品图：有实拍图用图，没有回退 SVG 占位 */
+  window.pImg = function (p, idx) {
+    idx = idx || 0;
+    if (p && p.images && p.images.length) {
+      return p.images[Math.min(idx, p.images.length - 1)];
+    }
+    return null;
+  };
+  window.pImgHTML = function (p, idx, cls) {
+    var src = window.pImg(p, idx);
+    if (!src) return thumbSVG(p);
+    return '<img class="' + (cls || 'p-img') + '" src="' + src +
+      '" alt="' + escapeHTML(window.pTitle(p)) + '" loading="lazy">';
+  };
+
   /* 款式显示名（多语言）。SKU 保持原始英文，仅显示层翻译。 */
   window.variantDisplay = function (v) {
     if (!v || !v.label || v.label === 'Standard') return '';
@@ -287,7 +302,7 @@
     return '<a class="p-card" href="product.html?id=' + encodeURIComponent(p.id) + '">' +
       '<div class="p-thumb" style="' + thumbStyle(p) + '">' +
         badge +
-        thumbSVG(p) +
+        window.pImgHTML(p, 0) +
         (save >= 30 ? '<span class="save-badge">' + escapeHTML(T('card.save', { n: save })) + '</span>' : '') +
       '</div>' +
       '<div class="p-body">' +

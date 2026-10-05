@@ -39,6 +39,7 @@ window.CATEGORY_STYLE = {
 window.PRODUCTS = [
   {
     id: 'org-drawer-3pk',
+    images: ['assets/img/org-drawer-3pk-1.jpg', 'assets/img/org-drawer-3pk-2.jpg'],
     title: 'Stackable Drawer Organizer, 3-Pack',
     cn: '可叠放抽屉收纳盒三件套',
     category: 'organization',
@@ -67,6 +68,7 @@ window.PRODUCTS = [
   },
   {
     id: 'org-cable-box',
+    images: ['assets/img/org-cable-box-1.jpg', 'assets/img/org-cable-box-2.jpg'],
     title: 'Desktop Cable & Cord Organizer Box',
     cn: '桌面理线收纳盒',
     category: 'organization',
@@ -95,6 +97,7 @@ window.PRODUCTS = [
   },
   {
     id: 'org-vacuum-bags',
+    images: ['assets/img/org-vacuum-bags-1.jpg', 'assets/img/org-vacuum-bags-2.jpg'],
     title: 'Vacuum Storage Bags',
     cn: '真空压缩收纳袋',
     category: 'organization',
@@ -122,6 +125,7 @@ window.PRODUCTS = [
   },
   {
     id: 'org-fridge-4pk',
+    images: ['assets/img/org-fridge-4pk-1.jpg', 'assets/img/org-fridge-4pk-2.jpg'],
     title: 'Stackable Fridge Bin Set, 4-Pack',
     cn: '冰箱收纳盒四件套',
     category: 'kitchen',
@@ -144,6 +148,7 @@ window.PRODUCTS = [
   },
   {
     id: 'kit-silicone-6pk',
+    images: ['assets/img/kit-silicone-6pk-1.jpg', 'assets/img/kit-silicone-6pk-2.jpg'],
     title: 'Silicone Kitchen Utensil Set, 6-Piece',
     cn: '硅胶厨具六件套',
     category: 'kitchen',
@@ -173,6 +178,7 @@ window.PRODUCTS = [
   },
   {
     id: 'pet-lint-roller',
+    images: ['assets/img/pet-lint-roller-1.jpg', 'assets/img/pet-lint-roller-2.jpg'],
     title: 'Reusable Pet Hair Remover Roller',
     cn: '宠物去毛滚筒（可重复使用）',
     category: 'pet',
@@ -195,6 +201,7 @@ window.PRODUCTS = [
   },
   {
     id: 'pet-slow-bowl',
+    images: ['assets/img/pet-slow-bowl-1.jpg', 'assets/img/pet-slow-bowl-2.jpg'],
     title: 'Slow Feeder Pet Bowl',
     cn: '宠物慢食碗',
     category: 'pet',
@@ -223,6 +230,7 @@ window.PRODUCTS = [
   },
   {
     id: 'pet-groom-glove',
+    images: ['assets/img/pet-groom-glove-1.jpg', 'assets/img/pet-groom-glove-2.jpg'],
     title: 'Pet Grooming Deshedding Glove',
     cn: '宠物去浮毛手套',
     category: 'pet',
@@ -251,35 +259,8 @@ window.PRODUCTS = [
     ]
   },
   {
-    id: 'fra-sachet-6pk',
-    title: 'Dried Flower Scent Sachets, 6-Pack',
-    cn: '干花香氛袋六件装',
-    category: 'fragrance',
-    price: 7.99,
-    compareAt: 15.99,
-    weight: 130,
-    dims: { l: 20, w: 15, h: 5 },
-    tag: 'Under $10',
-    rating: 4.6,
-    reviews: 149,
-    stock: 330,
-    options: [
-      { name: 'Scent', values: [
-        { label: 'Lavender' },
-        { label: 'Rose' },
-        { label: 'Citrus' }
-      ]}
-    ],
-    blurb: 'Tuck one in a drawer, a shoe, a gym bag. Fabric pouch, all-natural dried botanicals, no open flame and nothing to plug in.',
-    features: [
-      'Six pouches per set, sachet bags included',
-      'All-natural dried botanicals, long lasting',
-      'No flame, no batteries, nothing to plug in',
-      'Ideal for drawers, closets and luggage'
-    ]
-  },
-  {
     id: 'fra-reed-diffuser',
+    images: ['assets/img/fra-reed-diffuser-1.jpg', 'assets/img/fra-reed-diffuser-2.jpg'],
     title: 'Reed Diffuser Set with Ceramic Vase',
     cn: '陶瓷瓶无火香薰藤条套装',
     category: 'fragrance',
@@ -307,35 +288,8 @@ window.PRODUCTS = [
     ]
   },
   {
-    id: 'fra-gel-clips',
-    title: 'Scented Gel Air Freshener Clips, 4-Pack',
-    cn: '香氛凝胶夹四件装',
-    category: 'fragrance',
-    price: 12.99,
-    compareAt: 19.99,
-    weight: 180,
-    dims: { l: 16, w: 12, h: 6 },
-    tag: '',
-    rating: 4.4,
-    reviews: 88,
-    stock: 220,
-    options: [
-      { name: 'Scent', values: [
-        { label: 'Ocean' },
-        { label: 'Vanilla' },
-        { label: 'Pine' }
-      ]}
-    ],
-    blurb: 'Clips onto an air vent and turns the whole car around in about a minute. Lasts roughly thirty days each.',
-    features: [
-      'Four clips, four scents per set',
-      'Clips to vent blades, no adhesive',
-      'About 30 days of scent per clip',
-      'Adjustable open/close vent for intensity'
-    ]
-  },
-  {
     id: 'jwl-earring-case',
+    images: ['assets/img/jwl-earring-case-1.jpg', 'assets/img/jwl-earring-case-2.jpg'],
     title: 'Velvet Earring & Ring Storage Case',
     cn: '绒面耳饰戒指收纳盒',
     category: 'jewelry',
@@ -363,34 +317,8 @@ window.PRODUCTS = [
     ]
   },
   {
-    id: 'jwl-ring-set',
-    title: 'Adjustable Stainless Steel Ring Set, 5-Pack',
-    cn: '可调节不锈钢戒指五件套',
-    category: 'jewelry',
-    price: 19.99,
-    compareAt: 29.99,
-    weight: 60,
-    dims: { l: 12, w: 9, h: 3 },
-    tag: 'Gift pick',
-    rating: 4.6,
-    reviews: 174,
-    stock: 200,
-    options: [
-      { name: 'Size', values: [
-        { label: 'US 5–7' },
-        { label: 'US 8–10' }
-      ]}
-    ],
-    blurb: 'Opens and closes to fit almost any finger, so there is no size to guess wrong on. Steel core, tarnish-resistant finish.',
-    features: [
-      'Five rings, adjustable band',
-      'Hypoallergenic stainless steel core',
-      'Tarnish-resistant finish, no green fingers',
-      'Open-back design fits most finger sizes'
-    ]
-  },
-  {
     id: 'bundle-treasure-box',
+    images: ['assets/img/bundle-treasure-box-1.jpg', 'assets/img/bundle-treasure-box-2.jpg'],
     title: 'The Treasure Box — 3 Random Finds',
     cn: '淘货盲盒（随机 3 件）',
     category: 'bundle',
