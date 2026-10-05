@@ -77,7 +77,20 @@ weightBasis: 'volumetric' → 只按体积重（极端抛货）
 这不是 bug，是真话。** 真选品时照着这个信号筛：挑「小而扁」或「小而重」的，
 避开放大体积的（收纳盒、枕头、猫窝这类）。
 
-## 3. 本地预览
+## 3. 多语言（2026-10-05 新增）
+
+**11 种语言**：English / Español / Português / Français / Deutsch / Italiano / Русский / العربية / 日本語 / 한국어 / 中文
+
+**语言判定优先级**：URL `?lang=xx`（分享用）→ localStorage（手动选过就记住）→ 浏览器语言 `navigator.languages` → 英文兜底。
+即「哪个国家客户打开就是哪个语言」靠浏览器语言自动匹配（和 Shopify 同一思路，比 IP 判断准）。
+
+- 语言引擎：`assets/js/i18n.js`（自动检测 + 右上角切换器 + localStorage 记忆）
+- 字典：`assets/i18n/{en,zh,es,fr,de,it,pt,ja,ko,ar,ru}.js`，每份含全部界面文案 + 14 款商品的标题/卖点/特性
+- 阿拉伯语自动整站 RTL 镜像
+- 加新语言：复制 `en.js` 改名翻译 → 在 `i18n.js` 的 `LANGS` 里加一行即可
+- 分享链接可带 `?lang=es` 强制指定语言
+
+## 3.1 本地预览
 
 ```bash
 cd site

@@ -1,10 +1,13 @@
 /* ============================================================
-   站点公共逻辑：购物车（款式级）、格式化、共享组件
+   站点公共逻辑：购物车（款式级）、格式化、共享组件、多语言接入
    零依赖，全部原生 JS
 
    购物车行结构：{ pid: 商品ID, sel: {Finish:'Frosted'}, qty: 2 }
    行唯一键 = pid::选项值按顺序拼接
    → 同一商品的不同款式算作两行，可同时结算
+
+   文案一律走 window.I18N.t()，语言由 assets/js/i18n.js 决定。
+   页面渲染必须包在 I18N.ready(function(){ ... }) 里。
    ============================================================ */
 
 (function () {
@@ -12,6 +15,8 @@
 
   var CART_KEY = 'findly_cart_v2';
   var ZONE_KEY = 'findly_zone';
+
+  var T = function (k, v) { return window.I18N ? window.I18N.t(k, v) : k; };
 
   /* ---------- 工具 ---------- */
 
@@ -54,6 +59,21 @@
   window.thumbStyle = function (product) {
     var st = window.CATEGORY_STYLE[product.category] || window.CATEGORY_STYLE.organization;
     return 'background:' + st.c1 + ';';
+  };
+
+  /* ---------- 商品文案快捷取值（多语言 + 回退） ---------- */
+
+  window.pTitle = function (p) { return window.I18N.product(p, 'title'); };
+  window.pBlurb = function (p) { return window.I18N.product(p, 'blurb'); };
+  window.pFeatures = function (p) { return window.I18N.product(p, 'features'); };
+  window.catLabel = function (id) { return window.I18N.cat(id); };
+
+  /* 款式显示名（多语言）。SKU 保持原始英文，仅显示层翻译。 */
+  window.variantDisplay = function (v) {
+    if (!v || !v.label || v.label === 'Standard') return '';
+    return v.label.split(' · ').map(function (s) {
+      return window.I18N.optValue(s);
+    }).join(' · ');
   };
 
   /* ---------- 购物车 ---------- */
@@ -183,26 +203,30 @@
     var here = location.pathname.split('/').pop() || 'index.html';
     function nav(href, label) {
       var active = (here === href) ? ' class="is-active"' : '';
-      return '<a href="' + href + '"' + active + '>' + label + '</a>';
+      return '<a href="' + href + '"' + active + '>' + escapeHTML(label) + '</a>';
     }
     var notice = cfg.showDemoNotice
-      ? '<div class="demo-bar">Demo build &middot; 品牌名、价格与图片均为占位，上线前必须替换</div>'
+      ? '<div class="demo-bar">' + escapeHTML(T('demo.notice')) + '</div>'
       : '';
     return notice +
-      '<div class="ship-bar">Free shipping over ' + money(cfg.shipping.freeThreshold) +
-        ' &middot; <span>New finds every Wednesday</span></div>' +
+      '<div class="ship-bar">' +
+        escapeHTML(T('ship.free_over', { amount: money(cfg.shipping.freeThreshold) })) +
+        ' &middot; <span>' + escapeHTML(T('ship.new_finds')) + '</span></div>' +
       '<header class="site-header">' +
         '<div class="wrap header-inner">' +
           '<a class="logo" href="index.html">' + escapeHTML(cfg.brand) + '</a>' +
           '<nav class="main-nav">' +
-            nav('index.html', 'Shop all') +
-            nav('product.html?id=bundle-treasure-box', 'Treasure Box') +
-            nav('cart.html', 'Cart') +
+            nav('index.html', T('nav.shop_all')) +
+            nav('product.html?id=bundle-treasure-box', T('nav.treasure_box')) +
+            nav('cart.html', T('nav.cart')) +
           '</nav>' +
-          '<a class="cart-btn" href="cart.html" aria-label="Cart">' +
-            '<span class="cart-label">Cart</span>' +
-            '<span class="cart-count" id="cartCount">0</span>' +
-          '</a>' +
+          '<div class="header-right">' +
+            window.I18N.switcherHTML() +
+            '<a class="cart-btn" href="cart.html" aria-label="' + escapeHTML(T('nav.cart')) + '">' +
+              '<span class="cart-label">' + escapeHTML(T('nav.cart')) + '</span>' +
+              '<span class="cart-count" id="cartCount">0</span>' +
+            '</a>' +
+          '</div>' +
         '</div>' +
       '</header>';
   }
@@ -215,31 +239,30 @@
       '<div class="wrap footer-inner">' +
         '<div class="f-col">' +
           '<p class="f-brand">' + escapeHTML(cfg.brand) + '</p>' +
-          '<p class="f-note">' + escapeHTML(cfg.tagline) +
-            '. Small, useful things at prices that do not need justifying.</p>' +
+          '<p class="f-note">' + escapeHTML(T('footer.note')) + '</p>' +
         '</div>' +
         '<div class="f-col">' +
-          '<p class="f-h">Shop</p>' +
-          '<a href="index.html">All finds</a>' +
-          '<a href="product.html?id=bundle-treasure-box">Treasure Box</a>' +
-          '<a href="index.html?cat=pet">Pet</a>' +
-          '<a href="index.html?cat=organization">Storage &amp; Home</a>' +
+          '<p class="f-h">' + escapeHTML(T('footer.shop')) + '</p>' +
+          '<a href="index.html">' + escapeHTML(T('footer.all_finds')) + '</a>' +
+          '<a href="product.html?id=bundle-treasure-box">' + escapeHTML(T('nav.treasure_box')) + '</a>' +
+          '<a href="index.html?cat=pet">' + escapeHTML(T('footer.pet')) + '</a>' +
+          '<a href="index.html?cat=organization">' + escapeHTML(T('footer.storage_home')) + '</a>' +
         '</div>' +
         '<div class="f-col">' +
-          '<p class="f-h">Help</p>' +
-          '<a href="mailto:' + escapeHTML(cfg.supportEmail) + '">Contact</a>' +
-          '<a href="#">Shipping &amp; returns</a>' +
-          '<a href="#">Track order</a>' +
+          '<p class="f-h">' + escapeHTML(T('footer.help')) + '</p>' +
+          '<a href="mailto:' + escapeHTML(cfg.supportEmail) + '">' + escapeHTML(T('footer.contact')) + '</a>' +
+          '<a href="#">' + escapeHTML(T('footer.shipping_returns')) + '</a>' +
+          '<a href="#">' + escapeHTML(T('footer.track')) + '</a>' +
         '</div>' +
         '<div class="f-col">' +
-          '<p class="f-h">Follow</p>' +
+          '<p class="f-h">' + escapeHTML(T('footer.follow')) + '</p>' +
           '<a href="#">TikTok ' + escapeHTML(cfg.tiktokHandle) + '</a>' +
           '<a href="#">Instagram</a>' +
         '</div>' +
       '</div>' +
       '<div class="wrap f-bottom">' +
-        '<span>&copy; ' + new Date().getFullYear() + ' ' + escapeHTML(cfg.brand) + '. All rights reserved.</span>' +
-        '<span class="f-pay">Secure checkout</span>' +
+        '<span>' + escapeHTML(T('footer.rights', { year: new Date().getFullYear(), brand: cfg.brand })) + '</span>' +
+        '<span class="f-pay">' + escapeHTML(T('footer.secure')) + '</span>' +
       '</div>' +
     '</footer>';
   }
@@ -249,22 +272,26 @@
   window.productCardHTML = function (p) {
     var save = p.compareAt ? Math.round((1 - p.price / p.compareAt) * 100) : 0;
     var badge = p.tag
-      ? '<span class="badge' + (p.tag.indexOf('Under') === 0 ? ' badge-deal' : '') + '">' + escapeHTML(p.tag) + '</span>'
+      ? '<span class="badge' + (p.tag.indexOf('Under') === 0 ? ' badge-deal' : '') + '">' +
+        escapeHTML(window.I18N.tag(p.tag)) + '</span>'
       : '';
     var optHint = '';
     if (p.options && p.options.length) {
       var g = p.options[0];
-      optHint = '<span class="p-opt">' + g.values.length +
-        (g.name === 'Colour' ? ' colours' : ' options') + '</span>';
+      optHint = '<span class="p-opt">' +
+        (g.name === 'Colour'
+          ? T('card.colours', { n: g.values.length })
+          : T('card.options', { n: g.values.length })) +
+        '</span>';
     }
     return '<a class="p-card" href="product.html?id=' + encodeURIComponent(p.id) + '">' +
       '<div class="p-thumb" style="' + thumbStyle(p) + '">' +
         badge +
         thumbSVG(p) +
-        (save >= 30 ? '<span class="save-badge">Save ' + save + '%</span>' : '') +
+        (save >= 30 ? '<span class="save-badge">' + escapeHTML(T('card.save', { n: save })) + '</span>' : '') +
       '</div>' +
       '<div class="p-body">' +
-        '<p class="p-title">' + escapeHTML(p.title) + '</p>' +
+        '<p class="p-title">' + escapeHTML(pTitle(p)) + '</p>' +
         '<div class="p-meta">' +
           '<span class="p-rating">&#9733; ' + p.rating.toFixed(1) + '</span>' +
           '<span class="p-reviews">(' + p.reviews + ')</span>' +
@@ -285,6 +312,11 @@
     if (h) h.innerHTML = headerHTML();
     var f = document.getElementById('site-footer');
     if (f) f.innerHTML = footerHTML();
+    /* 静态标记（data-i18n / data-i18n-ph）统一替换 */
+    window.I18N.applyStatic();
+    /* 页面标题（可选：<title data-i18n-title="key">） */
+    var tEl = document.querySelector('title[data-i18n-title]');
+    if (tEl) document.title = T(tEl.getAttribute('data-i18n-title'), { brand: window.CONFIG.brand });
     window.refreshCartCount();
     document.addEventListener('cart:change', window.refreshCartCount);
   };

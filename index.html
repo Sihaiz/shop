@@ -15,26 +15,26 @@
 
   <section class="hero">
     <div class="hero-inner">
-      <span class="eyebrow">New finds every Wednesday</span>
-      <h1>Good stuff, <em>under $20</em>.</h1>
-      <p class="hero-sub">The useful little things that make a home work better — storage that actually fits, kitchen tools that last, pet gear that saves your couch. Priced so you do not have to think about it.</p>
+      <span class="eyebrow" data-i18n="home.eyebrow">New finds every Wednesday</span>
+      <h1><span data-i18n="home.h1">Good stuff,</span> <em data-i18n="home.h1_em">under $20.</em></h1>
+      <p class="hero-sub" data-i18n="home.sub">The useful little things that make a home work better — storage that actually fits, kitchen tools that last, pet gear that saves your couch. Priced so you do not have to think about it.</p>
       <div class="hero-cta">
-        <a class="btn btn-primary" href="#shelf">Shop the shelf</a>
-        <a class="btn btn-ghost" href="product.html?id=bundle-treasure-box">Open a Treasure Box</a>
+        <a class="btn btn-primary" href="#shelf" data-i18n="home.cta_shelf">Shop the shelf</a>
+        <a class="btn btn-ghost" href="product.html?id=bundle-treasure-box" data-i18n="home.cta_box">Open a Treasure Box</a>
       </div>
       <div class="hero-stats">
-        <div class="stat"><b>$7.99–19.99</b><span>Every single item</span></div>
-        <div class="stat"><b>Free ship $29+</b><span>Ships in 1 business day</span></div>
-        <div class="stat"><b>4.7★ avg</b><span>Across 3,100+ reviews</span></div>
+        <div class="stat"><b data-i18n="home.stat_price">$7.99–19.99</b><span data-i18n="home.stat_price_l">Every single item</span></div>
+        <div class="stat"><b data-i18n="home.stat_ship">Free ship $29+</b><span data-i18n="home.stat_ship_l">Ships in 1 business day</span></div>
+        <div class="stat"><b data-i18n="home.stat_rating">4.7★ avg</b><span data-i18n="home.stat_rating_l" data-i18n-args='{"n":"3,100"}'>Across 3,100+ reviews</span></div>
       </div>
     </div>
   </section>
 
   <section class="value-strip">
     <div class="wrap value-inner">
-      <div class="value"><b>One price ladder, no games</b><span>Three tiers. No fake countdowns.</span></div>
-      <div class="value"><b>Packed and shipped in 24h</b><span>Small items, tracked delivery.</span></div>
-      <div class="value"><b>Found, not dropshipped</b><span>We test it before it goes up.</span></div>
+      <div class="value"><b data-i18n="home.value1_t">One price ladder, no games</b><span data-i18n="home.value1_s">Three tiers. No fake countdowns.</span></div>
+      <div class="value"><b data-i18n="home.value2_t">Packed and shipped in 24h</b><span data-i18n="home.value2_s">Small items, tracked delivery.</span></div>
+      <div class="value"><b data-i18n="home.value3_t">Found, not dropshipped</b><span data-i18n="home.value3_s">We test it before it goes up.</span></div>
     </div>
   </section>
 
@@ -42,8 +42,8 @@
 
     <section class="section-head" id="shelf">
       <div>
-        <h2>This week's shelf</h2>
-        <p>Everything below is in stock and ready to ship.</p>
+        <h2 data-i18n="home.shelf_t">This week's shelf</h2>
+        <p data-i18n="home.shelf_s">Everything below is in stock and ready to ship.</p>
       </div>
     </section>
 
@@ -52,23 +52,23 @@
 
     <section class="section-head" style="margin-top:56px">
       <div>
-        <h2>Why the shelf changes</h2>
-        <p>We keep roughly 20 items live at a time. When something is gone, it is gone — and something else takes its place.</p>
+        <h2 data-i18n="home.why_t">Why the shelf changes</h2>
+        <p data-i18n="home.why_s">We keep roughly 20 items live at a time. When something is gone, it is gone — and something else takes its place.</p>
       </div>
     </section>
 
     <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));padding-bottom:60px">
       <div class="panel" style="margin:0">
-        <h2>Small batch on purpose</h2>
-        <p class="hint" style="margin-bottom:0">Deep inventory means boring inventory. We buy shallow so the shelf keeps moving and nothing sits in a warehouse for a year getting dusty.</p>
+        <h2 data-i18n="home.panel1_t">Small batch on purpose</h2>
+        <p class="hint" style="margin-bottom:0" data-i18n="home.panel1_s">Deep inventory means boring inventory. We buy shallow so the shelf keeps moving and nothing sits in a warehouse for a year getting dusty.</p>
       </div>
       <div class="panel" style="margin:0">
-        <h2>Tested before listing</h2>
-        <p class="hint" style="margin-bottom:0">Every item gets used for a week first. If it annoys us, it does not go up. That is the whole quality process, and it is enough.</p>
+        <h2 data-i18n="home.panel2_t">Tested before listing</h2>
+        <p class="hint" style="margin-bottom:0" data-i18n="home.panel2_s">Every item gets used for a week first. If it annoys us, it does not go up. That is the whole quality process, and it is enough.</p>
       </div>
       <div class="panel" style="margin:0">
-        <h2>Under $20, always</h2>
-        <p class="hint" style="margin-bottom:0">Three price tiers: $7.99, $12.99, $19.99. You should never have to check your balance before buying something useful.</p>
+        <h2 data-i18n="home.panel3_t">Under $20, always</h2>
+        <p class="hint" style="margin-bottom:0" data-i18n="home.panel3_s">Three price tiers: $7.99, $12.99, $19.99. You should never have to check your balance before buying something useful.</p>
       </div>
     </div>
 
@@ -78,13 +78,16 @@
 
 <div id="site-footer"></div>
 
+<script src="assets/js/i18n.js"></script>
 <script src="assets/js/config.js"></script>
 <script src="assets/js/products.js"></script>
 <script src="assets/js/shipping.js"></script>
 <script src="assets/js/store.js"></script>
 <script>
-(function () {
+I18N.ready(function () {
   mountChrome();
+
+  document.title = window.CONFIG.brand + ' — ' + I18N.t('home.h1') + ' ' + I18N.t('home.h1_em');
 
   var params = new URLSearchParams(location.search);
   var activeCat = params.get('cat') || 'all';
@@ -94,7 +97,7 @@
     bar.innerHTML = window.CATEGORIES.map(function (c) {
       return '<a class="chip' + (c.id === activeCat ? ' is-active' : '') +
         '" href="' + (c.id === 'all' ? 'index.html' : 'index.html?cat=' + c.id) + '">' +
-        escapeHTML(c.label) + '</a>';
+        escapeHTML(I18N.cat(c.id)) + '</a>';
     }).join('');
   }
 
@@ -122,7 +125,7 @@
 
   renderChips();
   renderGrid();
-})();
+});
 </script>
 </body>
 </html>

@@ -21,6 +21,7 @@
 }
 
 *{box-sizing:border-box;}
+[hidden]{display:none !important;}
 html{-webkit-text-size-adjust:100%;}
 body{
   margin:0;background:var(--paper);color:var(--ink);
@@ -68,6 +69,37 @@ h1,h2,h3{letter-spacing:-.02em;line-height:1.25;margin:0;}
   font-size:11.5px;font-weight:700;padding:0 6px;
 }
 .cart-count.is-empty{background:rgba(255,255,255,.28);color:#fff;}
+.header-right{display:flex;align-items:center;gap:10px;}
+
+/* ---------- 语言切换器 ---------- */
+.lang-switch{position:relative;}
+.lang-btn{
+  display:flex;align-items:center;gap:7px;background:transparent;
+  border:1px solid var(--line2);border-radius:999px;padding:8px 12px;
+  font-size:13px;font-weight:500;color:var(--ink2);line-height:1;
+  transition:border-color .15s,color .15s,background .15s;
+}
+.lang-btn:hover{border-color:var(--ink2);color:var(--ink);}
+.lang-btn svg{flex:none;opacity:.72;}
+.lang-cur{white-space:nowrap;max-width:12ch;overflow:hidden;text-overflow:ellipsis;}
+.lang-caret{font-size:9px;line-height:1;opacity:.6;}
+.lang-btn[aria-expanded="true"]{border-color:var(--ink);color:var(--ink);background:var(--card);}
+.lang-menu{
+  position:absolute;top:calc(100% + 8px);right:0;z-index:90;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 18px 44px -20px rgba(27,26,24,.45);
+  padding:6px;min-width:190px;max-height:min(72vh,430px);overflow:auto;
+}
+.lang-item{
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  width:100%;background:none;border:none;border-radius:8px;
+  padding:9px 11px;font-size:13.5px;color:var(--ink2);text-align:start;
+}
+.lang-item:hover{background:#F4F2ED;color:var(--ink);}
+.lang-item.is-on{background:var(--teal-bg);color:var(--teal);font-weight:600;}
+.lang-native{white-space:nowrap;}
+.lang-code{font-size:10.5px;letter-spacing:.08em;color:var(--ink3);font-weight:700;flex:none;}
+.lang-item.is-on .lang-code{color:var(--teal);opacity:.7;}
 
 /* ---------- Hero ---------- */
 .hero{border-bottom:1px solid var(--line);background:
@@ -377,6 +409,22 @@ h1,h2,h3{letter-spacing:-.02em;line-height:1.25;margin:0;}
 }
 .f-pay{color:var(--teal);font-weight:600;}
 
+/* ---------- RTL（阿拉伯语） ----------
+   flex / inline 方向会自动翻转；这里只补「物理方向」写死的几处 */
+[dir="rtl"] body{letter-spacing:0;}
+[dir="rtl"] .badge{left:auto;right:10px;}
+[dir="rtl"] .save-badge{right:auto;left:10px;}
+[dir="rtl"] .lang-menu{right:auto;left:0;}
+[dir="rtl"] .ship-toggle{text-align:right;}
+[dir="rtl"] .cart-variant{margin-right:0;margin-left:7px;}
+[dir="rtl"] .cart-sku{margin-right:0;margin-left:8px;}
+[dir="rtl"] .p-opt{border-left:none;border-right:1px solid var(--line2);padding-left:0;padding-right:7px;}
+[dir="rtl"] .pdp-features li{padding:12px 26px 12px 0;}
+[dir="rtl"] .pdp-features li::before{left:auto;right:2px;transform:rotate(135deg);}
+[dir="rtl"] .spec-row b{text-align:left;}
+[dir="rtl"] .hero h1{letter-spacing:0;}
+[dir="rtl"] .hero,.hero h1,.pdp h1,.page-head h1,.section-head h2,.p-now,.pdp-now,.kv.total b{letter-spacing:0;}
+
 /* ---------- 响应式 ---------- */
 @media(max-width:900px){
   .pdp-grid{grid-template-columns:1fr;gap:30px;}
@@ -399,4 +447,9 @@ h1,h2,h3{letter-spacing:-.02em;line-height:1.25;margin:0;}
   .cart-info{grid-area:info;}
   .cart-row-right{grid-area:actions;flex-direction:row;justify-content:space-between;width:100%;}
   .field-row{grid-template-columns:1fr;}
+  .lang-btn{padding:8px 10px;gap:5px;}
+}
+@media(max-width:460px){
+  .lang-cur{display:none;}
+  .lang-btn{padding:9px 11px;}
 }

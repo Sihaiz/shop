@@ -12,36 +12,36 @@
 
 <main class="wrap">
   <div class="page-head">
-    <h1>Your cart</h1>
-    <p id="cartSub">Loading…</p>
+    <h1 data-i18n="cart.title">Your cart</h1>
+    <p id="cartSub" data-i18n="cart.loading">Loading…</p>
   </div>
 
   <div class="cart-layout" id="cartLayout" hidden>
     <div class="cart-list" id="cartList"></div>
 
     <aside class="summary">
-      <h2>Order summary</h2>
+      <h2 data-i18n="cart.summary">Order summary</h2>
 
       <div class="field" style="margin-bottom:14px">
-        <label for="zoneSel">Ship to</label>
+        <label for="zoneSel" data-i18n="cart.ship_to">Ship to</label>
         <select id="zoneSel"></select>
       </div>
 
       <div class="free-ship" id="freeShipBox"></div>
 
-      <div class="kv"><span>Subtotal</span><b id="sumSub">$0.00</b></div>
-      <div class="kv"><span>Shipping</span><b id="sumShip">$0.00</b></div>
-      <div class="kv total"><span>Total</span><b id="sumTotal">$0.00</b></div>
+      <div class="kv"><span data-i18n="cart.subtotal">Subtotal</span><b id="sumSub">$0.00</b></div>
+      <div class="kv"><span data-i18n="cart.shipping">Shipping</span><b id="sumShip">$0.00</b></div>
+      <div class="kv total"><span data-i18n="cart.total">Total</span><b id="sumTotal">$0.00</b></div>
 
       <button class="ship-toggle" id="shipToggle" type="button">
-        <span>How shipping was calculated</span><span id="shipToggleArrow">+</span>
+        <span data-i18n="cart.how_shipping">How shipping was calculated</span><span id="shipToggleArrow">+</span>
       </button>
       <div class="ship-detail" id="shipDetail" hidden></div>
 
-      <a class="btn btn-primary btn-block" id="goCheckout" href="checkout.html" style="margin-top:18px">Checkout</a>
-      <a class="btn btn-ghost btn-block" href="index.html" style="margin-top:10px">Keep browsing</a>
+      <a class="btn btn-primary btn-block" id="goCheckout" href="checkout.html" style="margin-top:18px" data-i18n="cart.checkout">Checkout</a>
+      <a class="btn btn-ghost btn-block" href="index.html" style="margin-top:10px" data-i18n="cart.keep">Keep browsing</a>
 
-      <p class="ship-note">Ships in 1 business day. 30-day returns.<br>Card details never touch this site.</p>
+      <p class="ship-note"><span data-i18n="cart.note"></span><br><span data-i18n="cart.note2"></span></p>
     </aside>
   </div>
 
@@ -50,18 +50,23 @@
 
 <div id="site-footer"></div>
 
+<script src="assets/js/i18n.js"></script>
 <script src="assets/js/config.js"></script>
 <script src="assets/js/products.js"></script>
 <script src="assets/js/shipping.js"></script>
 <script src="assets/js/store.js"></script>
 <script>
-(function () {
+I18N.ready(function () {
+  var T = function (k, v) { return window.I18N.t(k, v); };
+
   mountChrome();
 
-  /* 分区下拉 */
+  document.title = T('cart.title') + ' \u2014 ' + window.CONFIG.brand;
+
+  /* 分区下拉（分区名走 i18n） */
   var zoneSel = document.getElementById('zoneSel');
   zoneSel.innerHTML = window.CONFIG.shipping.zones.map(function (z) {
-    return '<option value="' + z.id + '">' + escapeHTML(z.label) + '</option>';
+    return '<option value="' + z.id + '">' + escapeHTML(window.I18N.zone(z.id)) + '</option>';
   }).join('');
   zoneSel.value = window.cart.zone();
   zoneSel.onchange = function () { window.cart.setZone(zoneSel.value); };
@@ -69,7 +74,7 @@
   document.getElementById('shipToggle').onclick = function () {
     var d = document.getElementById('shipDetail');
     d.hidden = !d.hidden;
-    document.getElementById('shipToggleArrow').textContent = d.hidden ? '+' : '−';
+    document.getElementById('shipToggleArrow').textContent = d.hidden ? '+' : '\u2212';
   };
 
   render();
@@ -85,45 +90,46 @@
     if (!rows.length) {
       layout.hidden = true;
       empty.hidden = false;
-      sub.textContent = 'Nothing here yet.';
+      sub.textContent = T('cart.nothing');
       empty.innerHTML =
         '<div class="empty" style="margin:20px 0 60px">' +
-          '<h2>Your cart is empty</h2>' +
-          '<p>The shelf is small on purpose, so have a look before this week\u2019s picks sell through.</p>' +
-          '<a class="btn btn-primary" href="index.html">Back to the shelf</a>' +
+          '<h2>' + escapeHTML(T('cart.empty_t')) + '</h2>' +
+          '<p>' + escapeHTML(T('cart.empty_s')) + '</p>' +
+          '<a class="btn btn-primary" href="index.html">' + escapeHTML(T('pdp.back_shelf')) + '</a>' +
         '</div>';
       return;
     }
 
     empty.hidden = true;
     layout.hidden = false;
-    sub.textContent = n + (n === 1 ? ' item' : ' items') + ' in ' + rows.length +
-      (rows.length === 1 ? ' line' : ' lines') + ' — ready to go.';
+    sub.textContent = T('cart.items_line', { n: n, m: rows.length });
 
     /* ---- 购物车行 ---- */
     document.getElementById('cartList').innerHTML = rows.map(function (r) {
       var p = r.product, v = r.variant;
-      var variantLine = v.shortLabel
-        ? '<span class="cart-variant">' + escapeHTML(v.shortLabel) + '</span>'
+      var vlabel = variantDisplay(v);
+      var variantLine = vlabel
+        ? '<span class="cart-variant">' + escapeHTML(vlabel) + '</span>'
         : '';
       return '<div class="cart-row">' +
         '<div class="cart-thumb" style="' + thumbStyle(p) + '">' + thumbSVG(p) + '</div>' +
         '<div class="cart-info">' +
-          '<h3>' + escapeHTML(p.title) + '</h3>' +
+          '<h3>' + escapeHTML(pTitle(p)) + '</h3>' +
           '<p class="cn">' + variantLine +
             '<span class="cart-sku">' + escapeHTML(v.sku) + '</span>' +
-            '<span class="cart-unit">' + money(v.price) + ' each</span></p>' +
-          '<p class="cn">' + window.fmtG(v.weight) + ' · ' +
-            v.dims.l + '×' + v.dims.w + '×' + v.dims.h + ' cm</p>' +
+            '<span class="cart-unit">' + escapeHTML(T('cart.each', { price: money(v.price) })) + '</span></p>' +
+          '<p class="cn">' + window.fmtG(v.weight) + ' \u00b7 ' +
+            v.dims.l + '\u00d7' + v.dims.w + '\u00d7' + v.dims.h + ' cm</p>' +
           '<div class="qty-sm">' +
-            '<button type="button" data-dec="' + escapeHTML(r.key) + '" aria-label="Decrease">&#8722;</button>' +
+            '<button type="button" data-dec="' + escapeHTML(r.key) + '" aria-label="' + escapeHTML(T('pdp.decrease')) + '">&#8722;</button>' +
             '<span>' + r.qty + '</span>' +
-            '<button type="button" data-inc="' + escapeHTML(r.key) + '" aria-label="Increase">+</button>' +
+            '<button type="button" data-inc="' + escapeHTML(r.key) + '" aria-label="' + escapeHTML(T('pdp.increase')) + '">+</button>' +
           '</div>' +
         '</div>' +
         '<div class="cart-row-right">' +
           '<span class="cart-line-price">' + money(r.line) + '</span>' +
-          '<button class="link-remove" type="button" data-del="' + escapeHTML(r.key) + '">Remove</button>' +
+          '<button class="link-remove" type="button" data-del="' + escapeHTML(r.key) + '">' +
+            escapeHTML(T('cart.remove')) + '</button>' +
         '</div>' +
       '</div>';
     }).join('');
@@ -133,50 +139,50 @@
     var subtotal = window.cart.subtotal();
 
     document.getElementById('sumSub').textContent = money(subtotal);
-    document.getElementById('sumShip').textContent = q.shipping === 0 ? 'Free' : money(q.shipping);
+    document.getElementById('sumShip').textContent = q.shipping === 0 ? T('cart.free') : money(q.shipping);
     document.getElementById('sumTotal').textContent = money(subtotal + q.shipping);
 
     /* 免运提示 */
     var box = document.getElementById('freeShipBox');
     if (q.freeApplied) {
-      box.innerHTML = '<p><b>Free shipping unlocked.</b></p>' +
+      box.innerHTML = '<p><b>' + escapeHTML(T('cart.free_unlocked')) + '</b></p>' +
         '<div class="track"><i class="done" style="width:100%"></i></div>';
     } else if (q.overFreeCap) {
-      box.innerHTML = '<p>Ships free up to ' + window.fmtG(q.freeMaxBillableG) +
-        '. This order is <b>' + window.fmtG(q.billableWeightG) +
-        '</b> billable, so standard rates apply.</p>' +
+      box.innerHTML = '<p>' + escapeHTML(T('cart.free_cap', {
+          cap: window.fmtG(q.freeMaxBillableG),
+          w: window.fmtG(q.billableWeightG)
+        })) + '</p>' +
         '<div class="track"><i class="over" style="width:100%"></i></div>';
     } else {
-      box.innerHTML = '<p>You are <b>' + money(q.remainingForFree) +
-        '</b> away from free shipping.</p>' +
+      box.innerHTML = '<p>' + escapeHTML(T('cart.away', { amount: money(q.remainingForFree) })) + '</p>' +
         '<div class="track"><i style="width:' +
         Math.min(100, Math.round(subtotal / q.freeThreshold * 100)) + '%"></i></div>';
     }
 
     /* 运费明细 */
     document.getElementById('shipDetail').innerHTML =
-      '<div class="kv"><span>Destination</span><b>' + escapeHTML(q.zone.label) + '</b></div>' +
-      '<div class="kv"><span>Units</span><b>' + n + '</b></div>' +
-      '<div class="kv"><span>Actual weight</span><b>' + window.fmtG(q.packedWeightG) + '</b></div>' +
-      '<div class="kv"><span>Volume weight</span><b>' + window.fmtG(q.volumetricWeightG) + '</b></div>' +
-      '<div class="kv"><span>Billable weight</span><b>' + window.fmtG(q.billableWeightG) + '</b></div>' +
+      '<div class="kv"><span>' + escapeHTML(T('cart.dest')) + '</span><b>' + escapeHTML(window.I18N.zone(q.zone.id)) + '</b></div>' +
+      '<div class="kv"><span>' + escapeHTML(T('cart.units')) + '</span><b>' + n + '</b></div>' +
+      '<div class="kv"><span>' + escapeHTML(T('cart.actual_w')) + '</span><b>' + window.fmtG(q.packedWeightG) + '</b></div>' +
+      '<div class="kv"><span>' + escapeHTML(T('cart.vol_w')) + '</span><b>' + window.fmtG(q.volumetricWeightG) + '</b></div>' +
+      '<div class="kv"><span>' + escapeHTML(T('cart.billable_w')) + '</span><b>' + window.fmtG(q.billableWeightG) + '</b></div>' +
       (q.volumetricDominates
-        ? '<p class="ship-flag">Billed on volume — this order takes up more space than it weighs. ' +
-          'Volume weight is ' + q.volumetricShare + '% of the billable weight.</p>'
-        : '<p class="ship-flag ship-flag-ok">Billed on actual weight — this order is dense enough that size does not matter.</p>') +
+        ? '<p class="ship-flag">' + escapeHTML(T('cart.billed_volume', { p: q.volumetricShare })) + '</p>'
+        : '<p class="ship-flag ship-flag-ok">' + escapeHTML(T('cart.billed_actual')) + '</p>') +
       (q.oversize
-        ? '<p class="ship-flag">Oversize surcharge applied: +' + money(q.oversizeSurcharge) + '</p>' : '') +
-      '<div class="kv"><span>Base rate</span><b>' + money(q.baseRate) + '</b></div>' +
-      (q.oversize ? '<div class="kv"><span>Oversize surcharge</span><b>' + money(q.oversizeSurcharge) + '</b></div>' : '') +
-      '<div class="kv"><span>Free shipping discount</span><b>' +
-        (q.freeApplied ? '−' + money(q.baseRate + q.oversizeSurcharge) : '—') + '</b></div>' +
+        ? '<p class="ship-flag">' + escapeHTML(T('cart.oversize', { amount: money(q.oversizeSurcharge) })) + '</p>' : '') +
+      '<div class="kv"><span>' + escapeHTML(T('cart.base_rate')) + '</span><b>' + money(q.baseRate) + '</b></div>' +
+      (q.oversize ? '<div class="kv"><span>' + escapeHTML(T('cart.oversize_row')) + '</span><b>' + money(q.oversizeSurcharge) + '</b></div>' : '') +
+      '<div class="kv"><span>' + escapeHTML(T('cart.free_discount')) + '</span><b>' +
+        (q.freeApplied ? '\u2212' + money(q.baseRate + q.oversizeSurcharge) : '\u2014') + '</b></div>' +
       '<div class="kv" style="border-top:1px solid var(--line);margin-top:6px;padding-top:10px">' +
-        '<span><b style="color:var(--ink)">Shipping charged</b></span><b>' +
-        (q.shipping === 0 ? 'Free' : money(q.shipping)) + '</b></div>' +
-      '<p class="ship-note" style="margin-top:10px">Volume divisor: 1 kg per ' +
-        window.CONFIG.shipping.volumetricDivisor.toLocaleString() + ' cm³. ' +
-        'Packing overhead included: ' + window.CONFIG.shipping.packing.weightG + ' g + ' +
-        Math.round((window.CONFIG.shipping.packing.volumeFactor - 1) * 100) + '% volume.</p>';
+        '<span><b style="color:var(--ink)">' + escapeHTML(T('cart.shipping_charged')) + '</b></span><b>' +
+        (q.shipping === 0 ? T('cart.free') : money(q.shipping)) + '</b></div>' +
+      '<p class="ship-note" style="margin-top:10px">' + escapeHTML(T('cart.divisor_note', {
+        vol: window.CONFIG.shipping.volumetricDivisor.toLocaleString(),
+        g: window.CONFIG.shipping.packing.weightG,
+        p: Math.round((window.CONFIG.shipping.packing.volumeFactor - 1) * 100)
+      })) + '</p>';
   }
 
   /* 事件委托 */
@@ -188,9 +194,9 @@
     if (!row) return;
     if (t.hasAttribute('data-inc')) window.cart.setQty(key, row.qty + 1);
     if (t.hasAttribute('data-dec')) window.cart.setQty(key, row.qty - 1);
-    if (t.hasAttribute('data-del')) { window.cart.remove(key); toast('Removed from cart'); }
+    if (t.hasAttribute('data-del')) { window.cart.remove(key); toast(T('cart.removed')); }
   });
-})();
+});
 </script>
 </body>
 </html>
