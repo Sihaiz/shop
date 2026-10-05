@@ -166,7 +166,21 @@ window.I18N_DICTS.zh = {
     'co.demo_title': '尚未接入支付',
     'co.demo_body': '这是一个可运行的演示：购物车、重量、运费计算和下单表单都是真的，但还没有接入支付网关，因此不会产生任何扣款。',
     'co.err_payment': '无法连接支付服务',
-    'co.demo_toast': '演示模式 —— 尚未接入支付网关'
+    'co.demo_toast': '演示模式 —— 尚未接入支付网关',
+
+    /* ---------- 国家 / 语言选择器 ---------- */
+    'geo.title': '国家与语言',
+    'geo.search_ph': '搜索国家',
+    'geo.all': '全部国家',
+    'geo.none': '未找到匹配结果',
+    'geo.results': '{n} 个国家',
+    'geo.note': '选择国家的同时也会切换网站语言。',
+    'geo.region.americas': '美洲',
+    'geo.region.europe': '欧洲',
+    'geo.region.asia': '亚洲',
+    'geo.region.mena': '中东与非洲',
+    'geo.region.oceania': '大洋洲',
+    'geo.region.other': '其他地区'
   },
 
   cats: {

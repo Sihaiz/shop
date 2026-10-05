@@ -174,7 +174,21 @@ window.I18N_DICTS.en = {
     'co.demo_title': 'Payment not connected yet',
     'co.demo_body': 'This is a working demo. Cart, weights, shipping calculation and the order form are all real, but no payment gateway is wired up, so nothing will be charged.',
     'co.err_payment': 'Could not reach the payment service',
-    'co.demo_toast': 'Demo only — no payment gateway connected yet'
+    'co.demo_toast': 'Demo only — no payment gateway connected yet',
+
+    /* ---------- 国家 / 语言选择器 ---------- */
+    'geo.title': 'Country & language',
+    'geo.search_ph': 'Search country',
+    'geo.all': 'All countries',
+    'geo.none': 'No match found',
+    'geo.results': '{n} countries',
+    'geo.note': 'Picking a country also switches the site language.',
+    'geo.region.americas': 'Americas',
+    'geo.region.europe': 'Europe',
+    'geo.region.asia': 'Asia',
+    'geo.region.mena': 'Middle East & Africa',
+    'geo.region.oceania': 'Oceania',
+    'geo.region.other': 'Other regions'
   },
 
   /* ---------- 分类 ---------- */

@@ -159,7 +159,21 @@ window.I18N_DICTS.ja = {
     'co.demo_title': '決済はまだ接続されていません',
     'co.demo_body': 'これは動作するデモです。カート・重量・送料計算・注文フォームはすべて本物ですが、決済ゲートウェイが接続されていないため、請求は発生しません。',
     'co.err_payment': '決済サービスに接続できませんでした',
-    'co.demo_toast': 'デモのみ — 決済ゲートウェイ未接続'
+    'co.demo_toast': 'デモのみ — 決済ゲートウェイ未接続',
+
+    /* ---------- 国家 / 语言选择器 ---------- */
+    'geo.title': '国と言語',
+    'geo.search_ph': '国を検索',
+    'geo.all': 'すべての国',
+    'geo.none': '一致する結果がありません',
+    'geo.results': '{n} か国',
+    'geo.note': '国を選ぶとサイトの言語も切り替わります。',
+    'geo.region.americas': 'アメリカ大陸',
+    'geo.region.europe': 'ヨーロッパ',
+    'geo.region.asia': 'アジア',
+    'geo.region.mena': '中東・アフリカ',
+    'geo.region.oceania': 'オセアニア',
+    'geo.region.other': 'その他の地域'
   },
   cats: {
     all: 'すべて',

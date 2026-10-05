@@ -159,7 +159,21 @@ window.I18N_DICTS.pt = {
     'co.demo_title': 'Pagamento ainda não conectado',
     'co.demo_body': 'Esta é uma demo funcional. Carrinho, pesos, cálculo de frete e formulário são reais, mas não há gateway de pagamento conectado, então nada será cobrado.',
     'co.err_payment': 'Não foi possível contatar o serviço de pagamento',
-    'co.demo_toast': 'Apenas demo — sem gateway de pagamento conectado'
+    'co.demo_toast': 'Apenas demo — sem gateway de pagamento conectado',
+
+    /* ---------- 国家 / 语言选择器 ---------- */
+    'geo.title': 'País e idioma',
+    'geo.search_ph': 'Pesquisar país',
+    'geo.all': 'Todos os países',
+    'geo.none': 'Nenhum resultado encontrado',
+    'geo.results': '{n} países',
+    'geo.note': 'Escolher um país também altera o idioma do site.',
+    'geo.region.americas': 'Américas',
+    'geo.region.europe': 'Europa',
+    'geo.region.asia': 'Ásia',
+    'geo.region.mena': 'Oriente Médio e África',
+    'geo.region.oceania': 'Oceania',
+    'geo.region.other': 'Outras regiões'
   },
   cats: {
     all: 'Tudo',

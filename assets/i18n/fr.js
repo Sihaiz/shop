@@ -159,7 +159,21 @@ window.I18N_DICTS.fr = {
     'co.demo_title': 'Paiement non connecté',
     'co.demo_body': "Ceci est une démo fonctionnelle. Panier, poids, calcul de livraison et formulaire sont réels, mais aucune passerelle de paiement n'est branchée : rien ne sera débité.",
     'co.err_payment': 'Impossible de joindre le service de paiement',
-    'co.demo_toast': 'Démo uniquement — aucune passerelle de paiement connectée'
+    'co.demo_toast': 'Démo uniquement — aucune passerelle de paiement connectée',
+
+    /* ---------- 国家 / 语言选择器 ---------- */
+    'geo.title': 'Pays et langue',
+    'geo.search_ph': 'Rechercher un pays',
+    'geo.all': 'Tous les pays',
+    'geo.none': 'Aucun résultat trouvé',
+    'geo.results': '{n} pays',
+    'geo.note': 'Choisir un pays change aussi la langue du site.',
+    'geo.region.americas': 'Amériques',
+    'geo.region.europe': 'Europe',
+    'geo.region.asia': 'Asie',
+    'geo.region.mena': 'Moyen-Orient et Afrique',
+    'geo.region.oceania': 'Océanie',
+    'geo.region.other': 'Autres régions'
   },
   cats: {
     all: 'Tout',

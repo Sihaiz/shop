@@ -166,7 +166,21 @@ window.I18N_DICTS.es = {
     'co.demo_title': 'Pago aún no conectado',
     'co.demo_body': 'Esta es una demo funcional. El carrito, los pesos, el cálculo de envío y el formulario son reales, pero no hay pasarela de pago conectada, así que no se cobrará nada.',
     'co.err_payment': 'No se pudo contactar con el servicio de pago',
-    'co.demo_toast': 'Solo demo — aún sin pasarela de pago'
+    'co.demo_toast': 'Solo demo — aún sin pasarela de pago',
+
+    /* ---------- 国家 / 语言选择器 ---------- */
+    'geo.title': 'País e idioma',
+    'geo.search_ph': 'Buscar país',
+    'geo.all': 'Todos los países',
+    'geo.none': 'No se encontraron resultados',
+    'geo.results': '{n} países',
+    'geo.note': 'Elegir un país también cambia el idioma del sitio.',
+    'geo.region.americas': 'América',
+    'geo.region.europe': 'Europa',
+    'geo.region.asia': 'Asia',
+    'geo.region.mena': 'Oriente Medio y África',
+    'geo.region.oceania': 'Oceanía',
+    'geo.region.other': 'Otras regiones'
   },
 
   cats: {

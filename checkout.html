@@ -129,6 +129,7 @@
 
 <div id="site-footer"></div>
 
+<script src="assets/js/countries.js"></script>
 <script src="assets/js/i18n.js"></script>
 <script src="assets/js/config.js"></script>
 <script src="assets/js/products.js"></script>
@@ -167,12 +168,19 @@ I18N.ready(function () {
   var stateLabel = document.getElementById('stateLabel');
   var quote = null;
 
-  /* 国家下拉（国家名走 i18n，选项顺序固定） */
-  var COUNTRY_CODES = ['US', 'CA', 'GB', 'AU'];
-  country.innerHTML = COUNTRY_CODES.map(function (c) {
-    return '<option value="' + c + '">' + escapeHTML(window.I18N.country(c)) + '</option>';
+  /* 国家下拉：全量国家表（按区域分组），国家名走浏览器本地化 */
+  var ALL_COUNTRIES = window.COUNTRIES || [];
+  var REGIONS = window.REGION_ORDER || ['americas', 'europe', 'asia', 'mena', 'oceania'];
+  country.innerHTML = REGIONS.map(function (region) {
+    var items = ALL_COUNTRIES.filter(function (r) { return r.r === region; });
+    if (!items.length) return '';
+    return '<optgroup label="' + escapeHTML(window.I18N.t('geo.region.' + region)) + '">' +
+      items.map(function (r) {
+        return '<option value="' + r.c + '">' +
+          escapeHTML(window.flagOf(r.c) + ' ' + window.I18N.country(r.c)) + '</option>';
+      }).join('') + '</optgroup>';
   }).join('');
-  country.value = 'US';
+  country.value = window.I18N.currentCountry() || 'US';
 
   /* 购物车行（含款式） */
   document.getElementById('coItems').innerHTML = rows.map(function (r) {

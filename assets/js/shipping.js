@@ -21,16 +21,22 @@
     return zones.find(function (z) { return z.id === id; }) || zones[0];
   }
 
-  /* 按国家 + 州推断分区 */
+  /* 按国家 + 州推断分区。
+     真实分区只有 US / US-AKHI / CA / UK / AU 五个；
+     其余国家由国家表（countries.js）按区域就近映射：
+       美洲 → US ・ 欧洲 & 中东非洲 → UK ・ 亚洲 & 大洋洲 → AU
+     ⚠️ 上线前需替换成承运商真实分区报价，否则运费会算错。 */
   window.zoneForAddress = function (country, state) {
-    if (country === 'US') {
+    var c = String(country || '').toUpperCase();
+    if (c === 'US') {
       var s = String(state || '').trim().toUpperCase();
       if (s === 'AK' || s === 'HI') return 'US-AKHI';
       return 'US';
     }
-    if (country === 'CA') return 'CA';
-    if (country === 'GB') return 'UK';
-    if (country === 'AU') return 'AU';
+    if (typeof window.zoneForCountry === 'function') return window.zoneForCountry(c);
+    if (c === 'CA') return 'CA';
+    if (c === 'GB') return 'UK';
+    if (c === 'AU') return 'AU';
     return 'US';
   };
 

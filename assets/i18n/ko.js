@@ -159,7 +159,21 @@ window.I18N_DICTS.ko = {
     'co.demo_title': '결제가 아직 연결되지 않았습니다',
     'co.demo_body': '작동하는 데모입니다. 장바구니, 무게, 배송비 계산, 주문 양식은 모두 실제지만 결제 게이트웨이가 연결되지 않아 결제는 발생하지 않습니다.',
     'co.err_payment': '결제 서비스에 연결할 수 없습니다',
-    'co.demo_toast': '데모 전용 — 결제 게이트웨이 미연결'
+    'co.demo_toast': '데모 전용 — 결제 게이트웨이 미연결',
+
+    /* ---------- 国家 / 语言选择器 ---------- */
+    'geo.title': '국가 및 언어',
+    'geo.search_ph': '국가 검색',
+    'geo.all': '모든 국가',
+    'geo.none': '일치하는 결과가 없습니다',
+    'geo.results': '{n}개 국가',
+    'geo.note': '국가를 선택하면 사이트 언어도 함께 변경됩니다.',
+    'geo.region.americas': '아메리카',
+    'geo.region.europe': '유럽',
+    'geo.region.asia': '아시아',
+    'geo.region.mena': '중동 및 아프리카',
+    'geo.region.oceania': '오세아니아',
+    'geo.region.other': '기타 지역'
   },
   cats: {
     all: '전체',
