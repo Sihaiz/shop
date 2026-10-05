@@ -39,6 +39,7 @@ window.CATEGORY_STYLE = {
 window.PRODUCTS = [
   {
     id: 'org-drawer-3pk',
+    status: 'live',
     images: ['assets/img/org-drawer-3pk-1.jpg', 'assets/img/org-drawer-3pk-2.jpg'],
     title: 'Stackable Drawer Organizer, 3-Pack',
     cn: '可叠放抽屉收纳盒三件套',
@@ -68,6 +69,7 @@ window.PRODUCTS = [
   },
   {
     id: 'org-cable-box',
+    status: 'live',
     images: ['assets/img/org-cable-box-1.jpg', 'assets/img/org-cable-box-2.jpg'],
     title: 'Desktop Cable & Cord Organizer Box',
     cn: '桌面理线收纳盒',
@@ -97,6 +99,7 @@ window.PRODUCTS = [
   },
   {
     id: 'org-vacuum-bags',
+    status: 'live',
     images: ['assets/img/org-vacuum-bags-1.jpg', 'assets/img/org-vacuum-bags-2.jpg'],
     title: 'Vacuum Storage Bags',
     cn: '真空压缩收纳袋',
@@ -125,6 +128,7 @@ window.PRODUCTS = [
   },
   {
     id: 'org-fridge-4pk',
+    status: 'live',
     images: ['assets/img/org-fridge-4pk-1.jpg', 'assets/img/org-fridge-4pk-2.jpg'],
     title: 'Stackable Fridge Bin Set, 4-Pack',
     cn: '冰箱收纳盒四件套',
@@ -148,6 +152,7 @@ window.PRODUCTS = [
   },
   {
     id: 'kit-silicone-6pk',
+    status: 'live',
     images: ['assets/img/kit-silicone-6pk-1.jpg', 'assets/img/kit-silicone-6pk-2.jpg'],
     title: 'Silicone Kitchen Utensil Set, 6-Piece',
     cn: '硅胶厨具六件套',
@@ -178,6 +183,7 @@ window.PRODUCTS = [
   },
   {
     id: 'pet-lint-roller',
+    status: 'live',
     images: ['assets/img/pet-lint-roller-1.jpg', 'assets/img/pet-lint-roller-2.jpg'],
     title: 'Reusable Pet Hair Remover Roller',
     cn: '宠物去毛滚筒（可重复使用）',
@@ -201,6 +207,7 @@ window.PRODUCTS = [
   },
   {
     id: 'pet-slow-bowl',
+    status: 'live',
     images: ['assets/img/pet-slow-bowl-1.jpg', 'assets/img/pet-slow-bowl-2.jpg'],
     title: 'Slow Feeder Pet Bowl',
     cn: '宠物慢食碗',
@@ -230,6 +237,7 @@ window.PRODUCTS = [
   },
   {
     id: 'pet-groom-glove',
+    status: 'live',
     images: ['assets/img/pet-groom-glove-1.jpg', 'assets/img/pet-groom-glove-2.jpg'],
     title: 'Pet Grooming Deshedding Glove',
     cn: '宠物去浮毛手套',
@@ -260,6 +268,7 @@ window.PRODUCTS = [
   },
   {
     id: 'fra-reed-diffuser',
+    status: 'live',
     images: ['assets/img/fra-reed-diffuser-1.jpg', 'assets/img/fra-reed-diffuser-2.jpg'],
     title: 'Reed Diffuser Set with Ceramic Vase',
     cn: '陶瓷瓶无火香薰藤条套装',
@@ -289,6 +298,7 @@ window.PRODUCTS = [
   },
   {
     id: 'jwl-earring-case',
+    status: 'live',
     images: ['assets/img/jwl-earring-case-1.jpg', 'assets/img/jwl-earring-case-2.jpg'],
     title: 'Velvet Earring & Ring Storage Case',
     cn: '绒面耳饰戒指收纳盒',
@@ -318,6 +328,7 @@ window.PRODUCTS = [
   },
   {
     id: 'bundle-treasure-box',
+    status: 'live',
     images: ['assets/img/bundle-treasure-box-1.jpg', 'assets/img/bundle-treasure-box-2.jpg'],
     title: 'The Treasure Box — 3 Random Finds',
     cn: '淘货盲盒（随机 3 件）',
@@ -398,3 +409,11 @@ window.resolveVariant = function (product, selection) {
 window.lineKey = function (productId, variantKey) {
   return productId + '::' + variantKey;
 };
+
+
+/* ---------- 前台可见商品 ----------
+   上架 live：正常展示；下架 draft、存档 archived：前台不出现。
+   状态由 _tools/manage_products.py 维护。 */
+window.LIVE_PRODUCTS = (window.PRODUCTS || []).filter(function (p) {
+  return p.status !== 'draft' && p.status !== 'archived';
+});
