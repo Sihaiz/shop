@@ -103,7 +103,7 @@ I18N.ready(function () {
   }
 
   function renderGrid() {
-    var list = window.PRODUCTS.slice();
+    var list = (window.LIVE_PRODUCTS || window.PRODUCTS).slice();
     if (activeCat !== 'all') {
       list = list.filter(function (p) { return p.category === activeCat; });
     }

@@ -38,7 +38,10 @@ I18N.ready(function () {
   mountChrome();
 
   var id = new URLSearchParams(location.search).get('id');
-  var p = id ? window.findProduct(id) : null;
+  /* 只在上架商品里找：下架 / 存档的商品详情页直接显示「找不到」 */
+  var p = id
+    ? ((window.LIVE_PRODUCTS || window.PRODUCTS).find(function (x) { return x.id === id; }) || null)
+    : null;
   var root = document.getElementById('pdp');
 
   if (!p) {
@@ -244,9 +247,9 @@ I18N.ready(function () {
   refresh();
 
   /* ---------- 相关推荐 ---------- */
-  var rel = window.PRODUCTS.filter(function (x) {
+  var rel = (window.LIVE_PRODUCTS || window.PRODUCTS).filter(function (x) {
     return x.id !== p.id && x.category === p.category;
-  }).concat(window.PRODUCTS.filter(function (x) {
+  }).concat((window.LIVE_PRODUCTS || window.PRODUCTS).filter(function (x) {
     return x.id !== p.id && x.category !== p.category && x.tag === 'Bestseller';
   })).slice(0, 4);
 
